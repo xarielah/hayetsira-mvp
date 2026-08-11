@@ -1,0 +1,133 @@
+---
+import { barbers, site } from "../data/site";
+
+const stats = [
+	{ value: "‎+12", label: "שנים בענף" },
+	{ value: String(barbers.length), label: "ספרים בצוות" },
+	{ value: "4.9", label: "דירוג בגוגל" },
+];
+---
+
+<section
+	id="top"
+	aria-labelledby="hero-title"
+	class="texture relative overflow-hidden pt-28 pb-16 sm:pt-36 sm:pb-24"
+>
+	<div
+		class="pointer-events-none absolute inset-0 bg-gradient-to-b from-transparent to-sand-50 dark:to-sand-950"
+		aria-hidden="true"
+	>
+	</div>
+
+	<div
+		aria-hidden="true"
+		class="pointer-events-none absolute -top-24 -inset-s-32 hidden h-152 w-40 rotate-12 bg-olive-700/10 lg:block dark:bg-olive-400/10"
+	>
+	</div>
+
+	<div
+		class="relative mx-auto grid max-w-6xl items-center gap-12 px-4 sm:px-6 lg:grid-cols-[1.1fr_1fr]"
+	>
+		<div>
+			<p
+				class="slice-br inline-flex items-center gap-2 bg-olive-100 px-5 py-2 text-sm font-bold text-olive-900 [--slice:0.9rem] dark:bg-olive-900/60 dark:text-olive-100"
+			>
+				<span
+					class="size-2 bg-olive-600 dark:bg-olive-300"
+					aria-hidden="true"></span>
+				{site.kicker} · {site.address.city}
+			</p>
+
+			<h1
+				id="hero-title"
+				class="mt-6 font-display text-5xl leading-[1.05] font-black text-olive-950 sm:text-6xl lg:text-7xl dark:text-sand-50"
+			>
+				כל תספורת כאן<br />
+				היא <span
+					class="relative inline-block text-clay-600 dark:text-clay-300"
+				>
+					יצירה
+					<span
+						aria-hidden="true"
+						class="absolute inset-s-0 -bottom-1 h-1.5 w-full bg-clay-500/70 dark:bg-clay-400/60"
+					></span>
+				</span>
+			</h1>
+
+			<p
+				class="mt-8 max-w-lg border-s-4 border-olive-600 ps-5 text-lg leading-relaxed text-sand-700 dark:border-olive-500 dark:text-sand-300"
+			>
+				מספרת ברבר בלב {site.address.city}. תספורות גברים, עיצוב זקן
+				וגילוח מגבת חמה — בעבודת יד, בקצב שלכם, עם קפה ביד.
+			</p>
+
+			<div class="mt-9 flex flex-wrap items-center gap-3">
+				<a
+					href={site.bookingUrl}
+					class="bg-olive-700 px-8 py-4 text-base font-bold text-sand-50 shadow-lg shadow-olive-900/15 transition hover:bg-olive-800 dark:bg-olive-500 dark:text-olive-950 dark:hover:bg-olive-400"
+				>
+					קביעת תור
+				</a>
+				<a
+					href="#instagram"
+					class="border-2 border-clay-500 px-8 py-4 text-base font-bold text-clay-800 transition hover:bg-clay-500 hover:text-sand-50 dark:border-clay-400 dark:text-clay-200 dark:hover:bg-clay-400 dark:hover:text-clay-950"
+				>
+					לעבודות שלנו
+				</a>
+			</div>
+
+			<p class="mt-6 text-sm text-sand-600 dark:text-sand-400">
+				או בטלפון - <a
+					href={site.phoneHref}
+					class="font-bold text-olive-800 underline underline-offset-4 hover:text-olive-600 dark:text-olive-200 dark:hover:text-olive-100"
+					>{site.phoneDisplay}</a
+				>
+			</p>
+
+			<dl
+				class="mt-12 grid max-w-md grid-cols-3 border-t-2 border-sand-300 pt-8 dark:border-sand-800"
+			>
+				{
+					stats.map((stat, index) => (
+						<div
+							class={`flex flex-col ps-5 ${
+								index === 0
+									? ""
+									: "border-s-2 border-sand-300 dark:border-sand-800"
+							}`}
+						>
+							<dt class="order-2 text-sm text-sand-600 dark:text-sand-400">
+								{stat.label}
+							</dt>
+							<dd class="font-display text-3xl font-black text-olive-800 dark:text-olive-300">
+								{stat.value}
+							</dd>
+						</div>
+					))
+				}
+			</dl>
+		</div>
+
+		<div class="relative">
+			<div
+				aria-hidden="true"
+				class="parallel-l absolute inset-0 translate-x-4 translate-y-4 bg-olive-700 [--slice:2.5rem] sm:[--slice:4rem] dark:bg-olive-500"
+			>
+			</div>
+			<img
+				src="/images/barber-chair.avif"
+				alt="חלל המספרה: כיסא ברבר מול מראה עם תאורה חמה"
+				width="900"
+				height="1150"
+				class="parallel-l relative aspect-4/5 w-full object-cover [--slice:2.5rem] sm:[--slice:4rem]"
+			/>
+
+			<p
+				data-open-badge
+				hidden
+				class="slice-br absolute bottom-6 inset-e-10 flex items-center gap-2 bg-sand-50 px-5 py-3 text-sm font-bold text-sand-900 shadow-lg [--slice:0.9rem] [[hidden]]:hidden dark:bg-sand-900 dark:text-sand-100"
+			>
+			</p>
+		</div>
+	</div>
+</section>

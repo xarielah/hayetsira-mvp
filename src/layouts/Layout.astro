@@ -1,23 +1,88 @@
+---
+import "../styles/global.css";
+import { site } from "../data/site";
+
+interface Props {
+	title?: string;
+	description?: string;
+}
+
+const {
+	title = `${site.name} · ${site.kicker} ב${site.address.city}`,
+	description = site.description,
+} = Astro.props;
+---
+
 <!doctype html>
-<html lang="en">
+<html lang="he" dir="rtl" class="scroll-smooth">
 	<head>
 		<meta charset="utf-8" />
-		<meta name="viewport" content="width=device-width" />
+		<meta name="viewport" content="width=device-width, initial-scale=1" />
 		<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
-		<link rel="icon" href="/favicon.ico" />
 		<meta name="generator" content={Astro.generator} />
-		<title>Astro Basics</title>
+		<meta name="description" content={description} />
+		<meta
+			name="theme-color"
+			content="#43592e"
+			media="(prefers-color-scheme: light)"
+		/>
+		<meta
+			name="theme-color"
+			content="#171410"
+			media="(prefers-color-scheme: dark)"
+		/>
+		<meta property="og:type" content="website" />
+		<meta property="og:locale" content="he_IL" />
+		<meta property="og:title" content={title} />
+		<meta property="og:description" content={description} />
+		<title>{title}</title>
+
+		<link rel="preconnect" href="https://fonts.googleapis.com" />
+		<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+		<link
+			href="https://fonts.googleapis.com/css2?family=Open+Sans:ital,wght@0,300..800;1,300..800&display=swap"
+			rel="stylesheet"
+		/>
+
+		{/* קובע ערכת נושא לפני הצביעה הראשונה כדי למנוע הבזק לבן */}
+		<script is:inline>
+			(() => {
+				try {
+					const saved = localStorage.getItem("theme");
+					const dark = saved
+						? saved === "dark"
+						: window.matchMedia("(prefers-color-scheme: dark)")
+								.matches;
+					document.documentElement.classList.toggle("dark", dark);
+				} catch {}
+			})();
+		</script>
+
+		<script
+			type="application/ld+json"
+			is:inline
+			set:html={JSON.stringify({
+				"@context": "https://schema.org",
+				"@type": "HairSalon",
+				name: site.name,
+				description: site.description,
+				telephone: site.phoneDisplay,
+				address: {
+					"@type": "PostalAddress",
+					streetAddress: site.address.street,
+					addressLocality: site.address.city,
+					addressCountry: "IL",
+				},
+			})}
+		/>
 	</head>
-	<body>
+	<body class="font-sans">
+		<a
+			href="#main"
+			class="sr-only focus:not-sr-only focus:fixed focus:top-4 focus:inset-s-4 focus:z-100 focus:rounded-full focus:bg-olive-700 focus:px-5 focus:py-3 focus:text-sand-50 focus:shadow-lg"
+		>
+			דילוג לתוכן הראשי
+		</a>
 		<slot />
 	</body>
 </html>
-
-<style>
-	html,
-	body {
-		margin: 0;
-		width: 100%;
-		height: 100%;
-	}
-</style>

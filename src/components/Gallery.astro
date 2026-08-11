@@ -1,0 +1,147 @@
+---
+import { gallery } from "../data/site";
+---
+
+<section
+	aria-labelledby="gallery-title"
+	class="slice-top-l relative scroll-mt-24 bg-sand-100 py-20 [--slice:2.5rem] sm:py-28 lg:[--slice:5rem] dark:bg-sand-900/50"
+>
+	<div class="mx-auto max-w-6xl px-4 sm:px-6" id="gallery">
+		<header class="max-w-2xl">
+			<p
+				class="flex items-center gap-3 font-medium text-clay-600 dark:text-clay-300"
+			>
+				<span class="blade h-3 w-12 shrink-0" aria-hidden="true"></span>
+				גלריה
+			</p>
+			<h2
+				id="gallery-title"
+				class="mt-3 font-display text-4xl font-black text-olive-950 sm:text-5xl dark:text-sand-50"
+			>
+				עבודות מהכיסא
+			</h2>
+			<p class="mt-4 text-lg text-sand-700 dark:text-sand-300">
+				מבחר תוצאות מהחודשים האחרונים. לחיצה על תמונה תפתח אותה בגדול.
+			</p>
+		</header>
+
+		{/* רשת מדורגת: אריחים חתוכים לסירוגין ועמודות מוסטות בגובה */}
+		<ul
+			role="list"
+			class="mt-14 grid grid-cols-2 gap-4 sm:gap-6 lg:grid-cols-4"
+		>
+			{
+				gallery.map((item, index) => (
+					<li
+						class={`${index % 2 === 1 ? "lg:mt-14" : ""} ${item.wide ? "lg:row-span-2" : ""}`}
+					>
+						<figure class="h-full">
+							<button
+								type="button"
+								data-lightbox-open
+								data-src={item.src}
+								data-alt={item.alt}
+								data-caption={item.caption}
+								class={`group relative block h-full w-full overflow-hidden bg-sand-200 [--slice:1.25rem] transition focus-visible:-outline-offset-4 sm:[--slice:2rem] dark:bg-sand-800 ${
+									index % 2 === 0 ? "slice-tl" : "slice-br"
+								}`}
+							>
+								<img
+									src={item.src}
+									alt={item.alt}
+									width="800"
+									height={item.wide ? "1000" : "800"}
+									loading="lazy"
+									class={`w-full object-cover transition duration-500 group-hover:scale-105 ${
+										item.wide
+											? "aspect-4/5 lg:h-full"
+											: "aspect-square"
+									}`}
+								/>
+								<span
+									class="absolute inset-0 bg-gradient-to-t from-olive-950/75 via-olive-950/10 to-transparent opacity-0 transition group-hover:opacity-100 group-focus-visible:opacity-100"
+									aria-hidden="true"
+								/>
+								<span class="sr-only">הגדלת התמונה</span>
+							</button>
+						</figure>
+					</li>
+				))
+			}
+		</ul>
+	</div>
+</section>
+
+{
+	/* התיבה מבוססת על אלמנט dialog מובנה: לכידת מיקוד, Escape והחזרת מיקוד מגיעים מהדפדפן */
+}
+<dialog
+	data-lightbox
+	aria-labelledby="lightbox-caption"
+	class="notch m-auto max-h-[92vh] max-w-[min(56rem,92vw)] bg-sand-50 p-3 text-sand-900 shadow-2xl [--notch:1.5rem] backdrop:bg-olive-950/85 dark:bg-sand-900 dark:text-sand-100"
+>
+	<div class="flex items-start gap-3">
+		<p
+			id="lightbox-caption"
+			data-lightbox-caption
+			class="ps-2 pt-1.5 font-display text-lg font-bold"
+		>
+		</p>
+		<button
+			type="button"
+			data-lightbox-close
+			class="ms-auto inline-grid size-10 shrink-0 place-items-center text-sand-700 transition hover:bg-sand-200 dark:text-sand-300 dark:hover:bg-sand-800"
+		>
+			<span class="sr-only">סגירת התמונה</span>
+			<svg
+				class="size-5"
+				viewBox="0 0 24 24"
+				fill="none"
+				stroke="currentColor"
+				stroke-width="2"
+				stroke-linecap="round"
+				aria-hidden="true"
+			>
+				<path d="M6 6l12 12M18 6L6 18"></path>
+			</svg>
+		</button>
+	</div>
+	<img
+		data-lightbox-image
+		src=""
+		alt=""
+		class="mt-2 max-h-[75vh] w-full object-contain"
+	/>
+</dialog>
+
+<script>
+	const dialog = document.querySelector<HTMLDialogElement>("[data-lightbox]");
+	const image = dialog?.querySelector<HTMLImageElement>(
+		"[data-lightbox-image]",
+	);
+	const caption = dialog?.querySelector<HTMLElement>(
+		"[data-lightbox-caption]",
+	);
+
+	if (dialog && image && caption) {
+		document
+			.querySelectorAll<HTMLButtonElement>("[data-lightbox-open]")
+			.forEach((button) => {
+				button.addEventListener("click", () => {
+					image.src = button.dataset.src ?? "";
+					image.alt = button.dataset.alt ?? "";
+					caption.textContent = button.dataset.caption ?? "";
+					dialog.showModal();
+				});
+			});
+
+		dialog
+			.querySelector("[data-lightbox-close]")
+			?.addEventListener("click", () => dialog.close());
+
+		// לחיצה על הרקע שמחוץ לתיבה סוגרת אותה
+		dialog.addEventListener("click", (event) => {
+			if (event.target === dialog) dialog.close();
+		});
+	}
+</script>

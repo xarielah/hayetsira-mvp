@@ -1,0 +1,177 @@
+@import "tailwindcss";
+
+/* Class-based dark mode (toggle + system preference, see Layout.astro) */
+@custom-variant dark (&:where(.dark, .dark *));
+
+@theme {
+  --font-sans: "Open Sans", ui-sans-serif, system-ui, sans-serif;
+  --font-display: "Open Sans", ui-serif, Georgia, serif;
+
+  /* ירוק זית — צבע המותג */
+  --color-olive-50: #f5f8ef;
+  --color-olive-100: #e7efdb;
+  --color-olive-200: #cfdfb9;
+  --color-olive-300: #b0c890;
+  --color-olive-400: #8fae67;
+  --color-olive-500: #6f8f4a;
+  --color-olive-600: #567338;
+  --color-olive-700: #43592e;
+  --color-olive-800: #374828;
+  --color-olive-900: #2f3d25;
+  --color-olive-950: #172014;
+
+  /* חום/עץ — צבע משלים */
+  --color-clay-50: #faf6f2;
+  --color-clay-100: #f3eae1;
+  --color-clay-200: #e5d2c0;
+  --color-clay-300: #d2b399;
+  --color-clay-400: #bb8f6d;
+  --color-clay-500: #a9764f;
+  --color-clay-600: #8f5f42;
+  --color-clay-700: #764c39;
+  --color-clay-800: #613f32;
+  --color-clay-900: #50352b;
+  --color-clay-950: #2b1a15;
+
+  /* חול/ניטרלי חמים — רקעים ומשטחים */
+  --color-sand-50: #fcfaf6;
+  --color-sand-100: #f7f3ec;
+  --color-sand-200: #ede6da;
+  --color-sand-300: #ddd2c1;
+  --color-sand-400: #bdae99;
+  --color-sand-500: #9b8b76;
+  --color-sand-600: #7a6c5a;
+  --color-sand-700: #5d5145;
+  --color-sand-800: #403830;
+  --color-sand-900: #262119;
+  --color-sand-950: #171410;
+}
+
+@layer base {
+  html {
+    scroll-behavior: smooth;
+    /* כדי שכותרות לא יתחבאו מתחת לתפריט הדביק בעת ניווט לעוגן */
+    scroll-padding-top: 6rem;
+  }
+
+  body {
+    @apply bg-sand-50 text-sand-900 antialiased;
+    @apply dark:bg-sand-950 dark:text-sand-100;
+  }
+
+  /* מיקוד ברור ועקבי לניווט במקלדת */
+  :focus-visible {
+    @apply outline-2 outline-offset-2 outline-olive-600 dark:outline-olive-300;
+  }
+
+  ::selection {
+    @apply bg-olive-200 text-olive-950;
+  }
+
+  /* כיבוד העדפת "צמצום תנועה" של מערכת ההפעלה */
+  @media (prefers-reduced-motion: reduce) {
+    html {
+      scroll-behavior: auto;
+    }
+
+    *,
+    *::before,
+    *::after {
+      animation-duration: 0.01ms !important;
+      animation-iteration-count: 1 !important;
+      transition-duration: 0.01ms !important;
+    }
+  }
+}
+
+@layer components {
+
+  /* טקסטורת נייר עדינה לרקעים */
+  .texture {
+    background-image:
+      radial-gradient(circle at 15% 10%, color-mix(in oklab, var(--color-olive-300) 30%, transparent), transparent 45%),
+      radial-gradient(circle at 85% 0%, color-mix(in oklab, var(--color-clay-300) 32%, transparent), transparent 40%);
+  }
+
+  .dark .texture {
+    background-image:
+      radial-gradient(circle at 15% 10%, color-mix(in oklab, var(--color-olive-700) 34%, transparent), transparent 45%),
+      radial-gradient(circle at 85% 0%, color-mix(in oklab, var(--color-clay-800) 40%, transparent), transparent 40%);
+  }
+
+  /* קו מנוקד בין שם השירות למחיר (סגנון תפריט קלאסי) */
+  .leader {
+    background-image: radial-gradient(currentColor 1px, transparent 1px);
+    background-size: 6px 2px;
+    background-position: bottom;
+    background-repeat: repeat-x;
+  }
+
+  /* פס אלכסוני דקורטיבי — "להב" */
+  .blade {
+    background-image: repeating-linear-gradient(
+      135deg,
+      currentColor 0 2px,
+      transparent 2px 9px
+    );
+  }
+}
+
+/* ──────────────────────────────────────────────
+   שפת צורות: חיתוכים אלכסוניים במקום פינות מעוגלות.
+   עומק החיתוך נשלט במשתנה --slice / --notch,
+   כך שאפשר לשנות אותו לפי רוחב מסך: [--slice:1.5rem] lg:[--slice:5rem]
+   ────────────────────────────────────────────── */
+
+/* אלכסון לגובה מלא — הערך נמדד לרוחב */
+@utility slice-tl {
+  clip-path: polygon(var(--slice, 2rem) 0, 100% 0, 100% 100%, 0 100%);
+}
+@utility slice-bl {
+  clip-path: polygon(0 0, 100% 0, 100% 100%, var(--slice, 2rem) 100%);
+}
+@utility slice-tr {
+  clip-path: polygon(0 0, calc(100% - var(--slice, 2rem)) 0, 100% 100%, 0 100%);
+}
+@utility slice-br {
+  clip-path: polygon(0 0, 100% 0, calc(100% - var(--slice, 2rem)) 100%, 0 100%);
+}
+
+/* אלכסון לרוחב מלא — הערך נמדד לגובה */
+@utility slice-top-l {
+  clip-path: polygon(0 var(--slice, 2rem), 100% 0, 100% 100%, 0 100%);
+}
+@utility slice-top-r {
+  clip-path: polygon(0 0, 100% var(--slice, 2rem), 100% 100%, 0 100%);
+}
+@utility slice-bot-l {
+  clip-path: polygon(0 0, 100% 0, 100% 100%, 0 calc(100% - var(--slice, 2rem)));
+}
+@utility slice-bot-r {
+  clip-path: polygon(0 0, 100% 0, 100% calc(100% - var(--slice, 2rem)), 0 100%);
+}
+
+/* מקבילית — שני אלכסונים נגדיים */
+@utility parallel-l {
+  clip-path: polygon(var(--slice, 2rem) 0, 100% 0, calc(100% - var(--slice, 2rem)) 100%, 0 100%);
+}
+@utility parallel-r {
+  clip-path: polygon(0 0, calc(100% - var(--slice, 2rem)) 0, 100% 100%, var(--slice, 2rem) 100%);
+}
+
+/* שתי פינות נגדיות קטומות */
+@utility notch {
+  clip-path: polygon(
+    var(--notch, 1rem) 0,
+    100% 0,
+    100% calc(100% - var(--notch, 1rem)),
+    calc(100% - var(--notch, 1rem)) 100%,
+    0 100%,
+    0 var(--notch, 1rem)
+  );
+}
+
+/* ביטול חיתוך — לשימוש בנקודות שבירה: slice-bot-r lg:slice-none */
+@utility slice-none {
+  clip-path: none;
+}

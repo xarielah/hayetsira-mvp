@@ -1,0 +1,25 @@
+---
+interface Props {
+	class?: string;
+}
+const { class: className = "" } = Astro.props;
+---
+
+{/* סמל המספריים — דקורטיבי בלבד, שם המספרה מופיע כטקסט לצידו */}
+<svg
+	class={className}
+	viewBox="0 0 32 32"
+	fill="none"
+	stroke="currentColor"
+	stroke-width="2.1"
+	stroke-linecap="round"
+	stroke-linejoin="round"
+	aria-hidden="true"
+	focusable="false"
+>
+	<circle cx="9" cy="24" r="4.2"></circle>
+	<circle cx="23" cy="24" r="4.2"></circle>
+	<path d="M11.8 20.8 24 4"></path>
+	<path d="M20.2 20.8 8 4"></path>
+	<path d="M16 15.5v3"></path>
+</svg>

@@ -1,0 +1,62 @@
+---
+import { instagram } from "../data/site";
+import InstagramPosts from "./InstagramPosts.tsx";
+---
+
+<section
+	aria-labelledby="instagram-title"
+	class="slice-top-l relative scroll-mt-24 bg-sand-100 py-20 [--slice:2.5rem] sm:py-28 lg:[--slice:5rem] dark:bg-sand-900/50"
+>
+	<div class="mx-auto max-w-6xl px-4 sm:px-6" id="instagram">
+		<header class="max-w-2xl">
+			<p
+				class="flex items-center gap-3 font-medium text-clay-600 dark:text-clay-300"
+			>
+				<span class="blade h-3 w-12 shrink-0" aria-hidden="true"></span>
+				עבודות מהכיסא
+			</p>
+			<h2
+				id="instagram-title"
+				class="mt-3 font-display text-4xl font-black text-olive-950 sm:text-5xl dark:text-sand-50"
+			>
+				תעקבו אחרינו, כן?
+			</h2>
+			<p class="mt-4 text-lg text-sand-700 dark:text-sand-300">
+				הפוסטים האחרונים מהחשבון שלנו. כל תמונה מתעדכנת ישירות
+				מאינסטגרם.
+			</p>
+		</header>
+
+		{/* כרטיס פרופיל — הקישור לחשבון עצמו */}
+		<a
+			href={instagram.profileUrl}
+			target="_blank"
+			rel="noopener noreferrer"
+			class="slice-br mt-10 flex flex-wrap items-center gap-4 bg-sand-50 p-6 pr-8 transition [--slice:1.25rem] hover:bg-sand-200/70 focus-visible:-outline-offset-3 dark:bg-sand-900 dark:hover:bg-sand-800"
+		>
+			<img
+				src="/images/instagram-profile.jpg"
+				alt=""
+				class="h-16 w-16 rounded-full"
+			/>
+			<span>
+				<span
+					class="block font-display text-xl font-black text-olive-950 dark:text-sand-50"
+					>@{instagram.handle}</span
+				>
+				<span class="block text-sand-600 dark:text-sand-400"
+					>מעקב באינסטגרם<span class="sr-only">
+						(נפתח בחלון חדש)</span
+					></span
+				>
+			</span>
+			<span
+				class="slice-br ms-auto bg-olive-700 px-6 py-2.5 text-sm font-bold text-sand-50 [--slice:0.75rem] dark:bg-olive-500 dark:text-olive-950"
+				>לעקוב</span
+			>
+		</a>
+
+		{/* ההטמעות נטענות רק כשמגיעים לאזור — סקריפט של אינסטגרם הוא כבד */}
+		<InstagramPosts posts={instagram.posts} client:visible />
+	</div>
+</section>

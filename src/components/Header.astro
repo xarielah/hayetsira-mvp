@@ -1,0 +1,128 @@
+---
+import { nav, site } from "../data/site";
+import Logo from "./Logo.astro";
+import ThemeToggle from "./ThemeToggle.astro";
+---
+
+<header
+	class="fixed inset-x-0 top-0 z-50 border-b border-sand-200/70 bg-sand-50/85 backdrop-blur-md dark:border-sand-800/70 dark:bg-sand-950/85"
+>
+	<div class="mx-auto flex max-w-6xl items-center gap-4 px-4 py-3 sm:px-6">
+		<a
+			href="#top"
+			class="flex items-center gap-2.5 rounded-lg text-olive-800 dark:text-olive-200"
+			aria-label={`${site.name} — לראש הדף`}
+		>
+			<Logo class="size-7" />
+			<span class="font-display text-2xl leading-none font-bold tracking-tight">{site.name}</span>
+		</a>
+
+		<nav aria-label="ניווט ראשי" class="ms-auto hidden md:block">
+			<ul class="flex items-center gap-1">
+				{
+					nav.map((item) => (
+						<li>
+							<a
+								href={item.href}
+								class="block border-b-2 border-transparent px-4 py-2 text-sm font-medium text-sand-700 transition hover:border-olive-600 hover:text-olive-900 dark:text-sand-300 dark:hover:border-olive-400 dark:hover:text-olive-100"
+							>
+								{item.label}
+							</a>
+						</li>
+					))
+				}
+			</ul>
+		</nav>
+
+		<div class="ms-auto flex items-center gap-2 md:ms-0">
+			<ThemeToggle />
+			<a
+				href={site.bookingUrl}
+				class="slice-br hidden bg-olive-700 px-6 py-2.5 text-sm font-bold text-sand-50 shadow-sm transition [--slice:0.75rem] hover:bg-olive-800 focus-visible:-outline-offset-3 sm:inline-block dark:bg-olive-500 dark:text-olive-950 dark:hover:bg-olive-400"
+			>
+				קביעת תור
+			</a>
+
+			<button
+				type="button"
+				data-menu-button
+				aria-expanded="false"
+				aria-controls="mobile-menu"
+				class="inline-grid size-11 place-items-center border-2 border-sand-300 text-sand-700 transition hover:bg-sand-200 md:hidden dark:border-sand-800 dark:text-sand-300 dark:hover:bg-sand-800"
+			>
+				<span class="sr-only">פתיחת תפריט הניווט</span>
+				<svg
+					class="size-5"
+					viewBox="0 0 24 24"
+					fill="none"
+					stroke="currentColor"
+					stroke-width="1.9"
+					stroke-linecap="round"
+					aria-hidden="true"
+				>
+					<path d="M4 7h16M4 12h16M4 17h16"></path>
+				</svg>
+			</button>
+		</div>
+	</div>
+
+	<nav
+		id="mobile-menu"
+		aria-label="ניווט ראשי (נייד)"
+		hidden
+		class="border-t border-sand-200 bg-sand-50 md:hidden dark:border-sand-800 dark:bg-sand-950"
+	>
+		<ul class="mx-auto max-w-6xl px-4 py-3 sm:px-6">
+			{
+				nav.map((item) => (
+					<li>
+						<a
+							href={item.href}
+							class="block border-s-4 border-transparent px-4 py-3 text-base font-medium text-sand-800 transition hover:border-olive-600 hover:bg-olive-100 dark:text-sand-200 dark:hover:border-olive-400 dark:hover:bg-olive-900/40"
+						>
+							{item.label}
+						</a>
+					</li>
+				))
+			}
+			<li class="pt-2">
+				<a
+					href={site.bookingUrl}
+					class="slice-br block bg-olive-700 px-3 py-3 text-center text-base font-bold text-sand-50 [--slice:0.9rem] focus-visible:-outline-offset-3 dark:bg-olive-500 dark:text-olive-950"
+				>
+					קביעת תור
+				</a>
+			</li>
+		</ul>
+	</nav>
+</header>
+
+<script>
+	const button = document.querySelector<HTMLButtonElement>("[data-menu-button]");
+	const menu = document.querySelector<HTMLElement>("#mobile-menu");
+
+	if (button && menu) {
+		const setOpen = (open: boolean) => {
+			button.setAttribute("aria-expanded", String(open));
+			menu.hidden = !open;
+			const label = button.querySelector(".sr-only");
+			if (label) label.textContent = open ? "סגירת תפריט הניווט" : "פתיחת תפריט הניווט";
+		};
+
+		button.addEventListener("click", () => {
+			setOpen(button.getAttribute("aria-expanded") !== "true");
+		});
+
+		// סגירה אחרי בחירת קישור, ובלחיצה על Escape
+		menu.addEventListener("click", (e) => {
+			if ((e.target as HTMLElement).closest("a")) setOpen(false);
+		});
+
+		document.addEventListener("keydown", (e) => {
+			if (e.key === "Escape" && button.getAttribute("aria-expanded") === "true") {
+				setOpen(false);
+				button.focus();
+			}
+		});
+	}
+</script>
