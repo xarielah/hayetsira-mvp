@@ -28,9 +28,10 @@ const stats = [
 	<div
 		class="relative mx-auto grid max-w-6xl items-center gap-12 px-4 sm:px-6 lg:grid-cols-[1.1fr_1fr]"
 	>
-		<div>
+		<div data-reveal-stagger="90">
 			<p
 				class="slice-br inline-flex items-center gap-2 bg-olive-100 px-5 py-2 text-sm font-bold text-olive-900 [--slice:0.9rem] dark:bg-olive-900/60 dark:text-olive-100"
+				data-reveal
 			>
 				<span
 					class="size-2 bg-olive-600 dark:bg-olive-300"
@@ -41,6 +42,7 @@ const stats = [
 			<h1
 				id="hero-title"
 				class="mt-6 font-display text-5xl leading-[1.05] font-black text-olive-950 sm:text-6xl lg:text-7xl dark:text-sand-50"
+				data-reveal
 			>
 				כל תספורת כאן<br />
 				היא <span
@@ -56,12 +58,13 @@ const stats = [
 
 			<p
 				class="mt-8 max-w-lg border-s-4 border-olive-600 ps-5 text-lg leading-relaxed text-sand-700 dark:border-olive-500 dark:text-sand-300"
+				data-reveal
 			>
 				מספרת ברבר בלב {site.address.city}. תספורות גברים, עיצוב זקן
 				וגילוח מגבת חמה — בעבודת יד, בקצב שלכם, עם קפה ביד.
 			</p>
 
-			<div class="mt-9 flex flex-wrap items-center gap-3">
+			<div class="mt-9 flex flex-wrap items-center gap-3" data-reveal>
 				<a
 					href={site.bookingUrl}
 					class="bg-olive-700 px-8 py-4 text-base font-bold text-sand-50 shadow-lg shadow-olive-900/15 transition hover:bg-olive-800 dark:bg-olive-500 dark:text-olive-950 dark:hover:bg-olive-400"
@@ -76,7 +79,7 @@ const stats = [
 				</a>
 			</div>
 
-			<p class="mt-6 text-sm text-sand-600 dark:text-sand-400">
+			<p class="mt-6 text-sm text-sand-600 dark:text-sand-400" data-reveal>
 				או בטלפון - <a
 					href={site.phoneHref}
 					class="font-bold text-olive-800 underline underline-offset-4 hover:text-olive-600 dark:text-olive-200 dark:hover:text-olive-100"
@@ -86,6 +89,7 @@ const stats = [
 
 			<dl
 				class="mt-12 grid max-w-md grid-cols-3 border-t-2 border-sand-300 pt-8 dark:border-sand-800"
+				data-reveal
 			>
 				{
 					stats.map((stat, index) => (
@@ -108,7 +112,7 @@ const stats = [
 			</dl>
 		</div>
 
-		<div class="relative">
+		<div class="relative" data-reveal="zoom" data-reveal-delay="180">
 			<div
 				aria-hidden="true"
 				class="parallel-l absolute inset-0 translate-x-4 translate-y-4 bg-olive-700 [--slice:2.5rem] sm:[--slice:4rem] dark:bg-olive-500"

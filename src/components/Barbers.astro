@@ -2,14 +2,17 @@
 import { barbers } from "../data/site";
 ---
 
+{/* overflow-x-clip ולא overflow-hidden: הראשון חותך את בלוקי הצבע החורגים
+    בלי ליצור הקשר גלילה חדש, ולכן ה-sticky של המצגת ממשיך לעבוד */}
 <section
 	aria-labelledby="barbers-title"
-	class="scroll-mt-24 overflow-hidden py-20 sm:py-28"
+	class="overflow-x-clip py-20 sm:py-28"
 >
-	<div class="mx-auto max-w-6xl px-4 sm:px-6" id="barbers">
-		<header class="max-w-2xl">
+	<div class="mx-auto max-w-6xl scroll-mt-24 px-4 sm:px-6" id="barbers">
+		<header class="max-w-2xl" data-reveal-stagger="90">
 			<p
 				class="flex items-center gap-3 font-medium text-clay-600 dark:text-clay-300"
+				data-reveal
 			>
 				<span class="blade h-3 w-12 shrink-0" aria-hidden="true"></span>
 				צוות המספרה
@@ -17,155 +20,307 @@ import { barbers } from "../data/site";
 			<h2
 				id="barbers-title"
 				class="mt-3 font-display text-4xl font-black text-olive-950 sm:text-5xl dark:text-sand-50"
+				data-reveal
 			>
 				תפגשו את הצוות
 			</h2>
-			<p class="mt-4 text-lg text-sand-700 dark:text-sand-300">
+			<p class="mt-4 text-lg text-sand-700 dark:text-sand-300" data-reveal>
 				כל אחד עם היד שלו. אפשר לבחור מי יטפל בכם כשקובעים תור.
 			</p>
 		</header>
 	</div>
 
-	<ol role="list" class="mt-14 space-y-16 lg:mt-20 lg:space-y-0">
-		{
-			barbers.map((barber, index) => {
-				const imageOnStart = index % 2 === 0;
-				return (
-					<li class="group relative">
-						{/* גובה השורה נקבע ע"י עמודת הטקסט: התמונה יוצאת מהזרימה ב-lg (absolute)
-						    ולכן לא תורמת לגובה, ורק נמתחת למלא את מה שהטקסט קבע */}
-						<div class="grid lg:grid-cols-2 lg:items-stretch">
-							{/* עמודת התמונה */}
-							<div
-								class={`relative ${imageOnStart ? "" : "lg:order-last"}`}
+	{/* "מסילת" הגלילה: גבוהה מהמסך, ובתוכה פאנל דביק שנשאר במקום.
+	    אורך המסילה נגזר ממספר הספרים, ולכן היא נגמרת מעצמה
+	    והדף ממשיך לסקשן הבא בלי טיפול מיוחד. */}
+	<div
+		class="barbers-track relative mt-14 lg:mt-20"
+		data-barbers-track
+		style={`--slide-count:${barbers.length}`}
+	>
+		<div class="barbers-pin" data-barbers-pin>
+			{/* היפוך כיוון התנועה = החלפת שני הערכים האלה */}
+			<ol
+				role="list"
+				class="barbers-slides relative [--slide-enter:100%] [--slide-exit:-100%]"
+			>
+				{
+					barbers.map((barber, index) => {
+						const imageOnStart = index % 2 === 0;
+						return (
+							<li
+								class="barber-slide group relative"
+								data-barber-slide
 							>
-								{/* בלוק צבע מוסט מאחורי התמונה — נותן עומק לחיתוך */}
-								<div
-									aria-hidden="true"
-									class={`absolute inset-0 hidden bg-olive-700/25 lg:block dark:bg-olive-500/20 ${
-										imageOnStart
-											? "lg:slice-bl lg:-translate-x-6 lg:[--slice:7rem]"
-											: "lg:slice-br lg:translate-x-6 lg:[--slice:7rem]"
-									}`}
-								/>
-								<img
-									src={barber.image}
-									alt={`${barber.name}, ${barber.role} ב"היצירה"`}
-									loading="lazy"
-									decoding="async"
-									class={`slice-bot-l relative w-full object-cover object-center grayscale transition-[filter] duration-500 ease-out group-hover:grayscale-0 [--slice:2rem] [@media(hover:none)]:grayscale-0 lg:absolute lg:inset-0 lg:h-full lg:[--slice:7rem] ${
-										imageOnStart
-											? "lg:slice-bl"
-											: "lg:slice-br"
-									}`}
-								/>
-								{/* מספר סידורי דקורטיבי בתפר */}
-								<span
-									aria-hidden="true"
-									class={`absolute bottom-2 font-display text-7xl leading-none font-black text-sand-50/70 mix-blend-overlay lg:bottom-6 lg:text-[9rem] dark:text-sand-950/60 ${
-										/* בנייד החיתוך תמיד בפינה התחתונה בצד הסיום, ולכן המספר נשאר בצד ההתחלה */
-										imageOnStart
-											? "inset-s-4 lg:inset-s-10"
-											: "inset-s-4 lg:inset-s-auto lg:inset-e-10"
-									}`}
-								>
+								{/* גובה השורה נקבע ע"י עמודת הטקסט: התמונה יוצאת מהזרימה ב-lg (absolute)
+								    ולכן לא תורמת לגובה, ורק נמתחת למלא את מה שהטקסט קבע.
+								    בנייד במצב הנעול המצב מתהפך — ראו .barber-layout ב-global.css */}
+								<div class="barber-layout grid lg:grid-cols-2 lg:items-stretch">
+									{/* עמודת התמונה */}
+									<div
+										class={`barber-media relative ${imageOnStart ? "" : "lg:order-last"}`}
+									>
+										{/* בלוק צבע מוסט מאחורי התמונה — נותן עומק לחיתוך */}
+										<div
+											aria-hidden="true"
+											class={`absolute inset-0 hidden bg-olive-700/25 lg:block dark:bg-olive-500/20 ${
+												imageOnStart
+													? "lg:slice-bl lg:-translate-x-6 lg:[--slice:7rem]"
+													: "lg:slice-br lg:translate-x-6 lg:[--slice:7rem]"
+											}`}
+										/>
+										<img
+											src={barber.image}
+											alt={`${barber.name}, ${barber.role} ב"היצירה"`}
+											loading="lazy"
+											decoding="async"
+											class={`barber-photo slice-bot-l relative w-full object-cover object-center grayscale transition-[filter] duration-500 ease-out group-hover:grayscale-0 [--slice:2rem] [@media(hover:none)]:grayscale-0 lg:absolute lg:inset-0 lg:h-full lg:[--slice:7rem] ${
+												imageOnStart
+													? "lg:slice-bl"
+													: "lg:slice-br"
+											}`}
+										/>
+										{/* מספר סידורי דקורטיבי בתפר */}
+										<span
+											aria-hidden="true"
+											class={`absolute bottom-2 font-display text-7xl leading-none font-black text-sand-50/70 mix-blend-overlay lg:bottom-6 lg:text-[9rem] dark:text-sand-950/60 ${
+												/* בנייד החיתוך תמיד בפינה התחתונה בצד הסיום, ולכן המספר נשאר בצד ההתחלה */
+												imageOnStart
+													? "inset-s-4 lg:inset-s-10"
+													: "inset-s-4 lg:inset-s-auto lg:inset-e-10"
+											}`}
+										>
+											{String(index + 1).padStart(2, "0")}
+										</span>
+									</div>
+
+									{/* עמודת הטקסט */}
+									<div
+										class={`barber-copy flex flex-col justify-center px-4 pt-8 sm:px-6 lg:px-14 lg:py-16 ${
+											imageOnStart
+												? "lg:pe-6 lg:ps-14"
+												: "lg:pe-14 lg:ps-6"
+										}`}
+									>
+										<div
+											class={`w-full max-w-xl ${imageOnStart ? "lg:me-auto" : "lg:ms-auto"}`}
+										>
+											<p class="font-medium text-clay-700 dark:text-clay-300">
+												{barber.role}
+											</p>
+											<h3 class="mt-1 font-display text-3xl font-black text-olive-950 sm:text-4xl dark:text-sand-50">
+												{barber.name}
+											</h3>
+
+											<span
+												aria-hidden="true"
+												class="mt-5 block h-1 w-20 bg-clay-500 dark:bg-clay-400"
+											/>
+
+											<p class="mt-5 text-lg leading-relaxed text-sand-700 dark:text-sand-300">
+												{barber.bio}
+											</p>
+
+											<ul
+												role="list"
+												class="mt-6 flex flex-wrap gap-2"
+												aria-label={`התמחויות של ${barber.name}`}
+											>
+												{barber.specialties.map((item) => (
+													<li class="slice-br bg-olive-100 px-4 py-1.5 text-sm font-medium text-olive-900 [--slice:0.7rem] dark:bg-olive-900/60 dark:text-olive-100">
+														{item}
+													</li>
+												))}
+											</ul>
+
+											<p class="mt-7 flex flex-wrap items-center gap-x-5 gap-y-3 border-t-2 border-sand-200 pt-5 text-sm text-sand-600 dark:border-sand-800 dark:text-sand-400">
+												<span>{barber.years} שנות ניסיון</span>
+												{barber.instagram && (
+													<a
+														href={barber.instagram}
+														rel="noopener noreferrer"
+														target="_blank"
+														class="inline-flex items-center gap-1.5 font-bold text-olive-800 underline-offset-4 hover:underline dark:text-olive-300"
+													>
+														<svg
+															class="size-4"
+															viewBox="0 0 24 24"
+															fill="none"
+															stroke="currentColor"
+															stroke-width="1.8"
+															aria-hidden="true"
+														>
+															<rect
+																x="3"
+																y="3"
+																width="18"
+																height="18"
+																rx="5"
+															/>
+															<circle
+																cx="12"
+																cy="12"
+																r="4"
+															/>
+															<circle
+																cx="17.5"
+																cy="6.5"
+																r="1.1"
+																fill="currentColor"
+																stroke="none"
+															/>
+														</svg>
+														<span>
+															אינסטגרם
+															<span class="sr-only">
+																{" "}
+																של {barber.name} (נפתח
+																בחלון חדש)
+															</span>
+														</span>
+													</a>
+												)}
+											</p>
+										</div>
+									</div>
+								</div>
+							</li>
+						);
+					})
+				}
+			</ol>
+
+			{/* סרגל ניווט — מוצג רק במצב הנעול, ומאפשר גם דילוג ישיר */}
+			<ul
+				role="list"
+				class="barbers-rail absolute top-1/2 z-10 hidden -translate-y-1/2 flex-col gap-3 inset-e-5 xl:inset-e-8"
+			>
+				{
+					barbers.map((barber, index) => (
+						<li>
+							<button
+								type="button"
+								data-barber-dot={index}
+								aria-current="false"
+								class="group/dot flex items-center gap-2 py-1 font-display text-sm font-black tabular-nums text-sand-500 transition-colors hover:text-olive-700 aria-current:text-olive-800 dark:text-sand-500 dark:hover:text-olive-300 dark:aria-current:text-olive-300"
+							>
+								<span class="sr-only">מעבר ל{barber.name}</span>
+								<span aria-hidden="true">
 									{String(index + 1).padStart(2, "0")}
 								</span>
-							</div>
-
-							{/* עמודת הטקסט */}
-							<div
-								class={`flex flex-col justify-center px-4 pt-8 sm:px-6 lg:px-14 lg:py-16 ${
-									imageOnStart
-										? "lg:pe-6 lg:ps-14"
-										: "lg:pe-14 lg:ps-6"
-								}`}
-							>
-								<div
-									class={`w-full max-w-xl ${imageOnStart ? "lg:me-auto" : "lg:ms-auto"}`}
-								>
-									<p class="font-medium text-clay-700 dark:text-clay-300">
-										{barber.role}
-									</p>
-									<h3 class="mt-1 font-display text-3xl font-black text-olive-950 sm:text-4xl dark:text-sand-50">
-										{barber.name}
-									</h3>
-
-									<span
-										aria-hidden="true"
-										class="mt-5 block h-1 w-20 bg-clay-500 dark:bg-clay-400"
-									/>
-
-									<p class="mt-5 text-lg leading-relaxed text-sand-700 dark:text-sand-300">
-										{barber.bio}
-									</p>
-
-									<ul
-										role="list"
-										class="mt-6 flex flex-wrap gap-2"
-										aria-label={`התמחויות של ${barber.name}`}
-									>
-										{barber.specialties.map((item) => (
-											<li class="slice-br bg-olive-100 px-4 py-1.5 text-sm font-medium text-olive-900 [--slice:0.7rem] dark:bg-olive-900/60 dark:text-olive-100">
-												{item}
-											</li>
-										))}
-									</ul>
-
-									<p class="mt-7 flex flex-wrap items-center gap-x-5 gap-y-3 border-t-2 border-sand-200 pt-5 text-sm text-sand-600 dark:border-sand-800 dark:text-sand-400">
-										<span>{barber.years} שנות ניסיון</span>
-										{barber.instagram && (
-											<a
-												href={barber.instagram}
-												rel="noopener noreferrer"
-												target="_blank"
-												class="inline-flex items-center gap-1.5 font-bold text-olive-800 underline-offset-4 hover:underline dark:text-olive-300"
-											>
-												<svg
-													class="size-4"
-													viewBox="0 0 24 24"
-													fill="none"
-													stroke="currentColor"
-													stroke-width="1.8"
-													aria-hidden="true"
-												>
-													<rect
-														x="3"
-														y="3"
-														width="18"
-														height="18"
-														rx="5"
-													/>
-													<circle
-														cx="12"
-														cy="12"
-														r="4"
-													/>
-													<circle
-														cx="17.5"
-														cy="6.5"
-														r="1.1"
-														fill="currentColor"
-														stroke="none"
-													/>
-												</svg>
-												<span>
-													אינסטגרם
-													<span class="sr-only">
-														{" "}
-														של {barber.name} (נפתח
-														בחלון חדש)
-													</span>
-												</span>
-											</a>
-										)}
-									</p>
-								</div>
-							</div>
-						</div>
-					</li>
-				);
-			})
-		}
-	</ol>
+								<span
+									aria-hidden="true"
+									class="h-0.5 w-4 bg-current opacity-40 transition-all group-hover/dot:w-7 group-aria-current/dot:w-8 group-aria-current/dot:opacity-100"
+								/>
+							</button>
+						</li>
+					))
+				}
+			</ul>
+		</div>
+	</div>
 </section>
+
+<script>
+	// המצגת הנעולה של הצוות.
+	//
+	// אין כאן חטיפה של אירועי גלילה: הפאנל דביק בתוך מסילה גבוהה, וכל מה
+	// שהסקריפט עושה זה לתרגם את מיקום הגלילה בתוך המסילה למספר השקופית
+	// הפעילה. התוצאה — הגלילה נשארת מקורית (מקלדת, טאצ'פד, פס גלילה),
+	// וסוף המסילה מחזיר את הדף לזרימה רגילה מעצמו.
+	//
+	// התנאי חייב להיות זהה לזה שב-global.css, אחרת ה-JS והעיצוב ייפרדו.
+	const PINNED =
+		"(min-height: 34rem) and (prefers-reduced-motion: no-preference)";
+
+	const track = document.querySelector<HTMLElement>("[data-barbers-track]");
+	const pin = track?.querySelector<HTMLElement>("[data-barbers-pin]");
+	const slides = [
+		...(track?.querySelectorAll<HTMLElement>("[data-barber-slide]") ?? []),
+	];
+	const dots = [
+		...(track?.querySelectorAll<HTMLButtonElement>("[data-barber-dot]") ?? []),
+	];
+
+	if (track && pin && slides.length) {
+		const media = window.matchMedia(PINNED);
+		const clamp = (n: number, min: number, max: number) =>
+			Math.min(Math.max(n, min), max);
+
+		let active = -1;
+		let ticking = false;
+
+		/** אורך הגלילה שבו הפאנל דבוק — ההפרש בין המסילה למסך */
+		const pinLength = () => track.offsetHeight - pin.offsetHeight;
+
+		const paint = (index: number) => {
+			if (index === active) return;
+			active = index;
+
+			slides.forEach((slide, i) => {
+				slide.dataset.state =
+					i === index ? "active" : i < index ? "past" : "next";
+				// inert מוציא את השקופיות המוסתרות ממסלול הטאב ומקורא המסך
+				slide.inert = i !== index;
+			});
+
+			dots.forEach((dot, i) => {
+				dot.setAttribute("aria-current", i === index ? "true" : "false");
+			});
+		};
+
+		const measure = () => {
+			if (!media.matches) return;
+
+			const length = pinLength();
+			if (length <= 0) return paint(0);
+
+			const progress = clamp(-track.getBoundingClientRect().top / length, 0, 1);
+			paint(clamp(Math.floor(progress * slides.length), 0, slides.length - 1));
+		};
+
+		const onScroll = () => {
+			if (ticking) return;
+			ticking = true;
+			requestAnimationFrame(() => {
+				ticking = false;
+				measure();
+			});
+		};
+
+		/** מחזיר את הרשימה למצב זרימה רגיל כשיוצאים מהמצב הנעול */
+		const release = () => {
+			active = -1;
+			slides.forEach((slide) => {
+				delete slide.dataset.state;
+				slide.inert = false;
+			});
+			dots.forEach((dot) => dot.setAttribute("aria-current", "false"));
+		};
+
+		const sync = () => {
+			if (media.matches) {
+				window.addEventListener("scroll", onScroll, { passive: true });
+				measure();
+			} else {
+				window.removeEventListener("scroll", onScroll);
+				release();
+			}
+		};
+
+		media.addEventListener("change", sync);
+		window.addEventListener("resize", onScroll, { passive: true });
+		sync();
+
+		// דילוג ישיר: מכוונים לאמצע מנת הגלילה של אותה שקופית
+		dots.forEach((dot, index) => {
+			dot.addEventListener("click", () => {
+				const top = track.getBoundingClientRect().top + window.scrollY;
+				window.scrollTo({
+					top: top + ((index + 0.5) / slides.length) * pinLength(),
+					behavior: "smooth",
+				});
+			});
+		});
+	}
+</script>

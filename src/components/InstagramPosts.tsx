@@ -11,10 +11,12 @@ export default function InstagramPosts({ posts }: Props) {
 	return (
 		<ul
 			role="list"
-			className="mt-12 grid gap-6 sm:grid-cols-2 lg:grid-cols-3 lg:w-full w-[90%]"
+			className="mt-12 grid w-full gap-6 sm:grid-cols-2 lg:grid-cols-3"
 		>
 			{posts.map((url) => (
-				<li key={url} className="flex justify-center">
+				/* min-w-0 מבטל את min-width:auto של פריט גריד, אחרת רוחב
+				   המינימום של האייפריים של אינסטגרם מרחיב את העמודה */
+				<li key={url} className="flex min-w-0 justify-center">
 					<InstagramEmbed
 						url={url}
 						width="100%"
