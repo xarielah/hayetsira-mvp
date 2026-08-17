@@ -1,0 +1,78 @@
+---
+// מסך פתיחה: הבאנר על רקע אחיד בצבע הרקע של התמונה עצמה (#241f20),
+// כך שהלוגו נראה כאילו הוא מרחף על המסך בלי מסגרת.
+// אחרי כשלוש שניות השכבה נמוגה וחושפת את האתר.
+//
+// הדהייה נעשית ב-CSS בלבד, כדי שהשכבה תיעלם גם בלי JavaScript;
+// הסקריפט רק נועל את הגלילה בזמן ההצגה ומסיר את האלמנט בסוף.
+const HOLD_MS = 10000; // זמן ההחזקה לפני תחילת הדהייה
+const FADE_MS = 700; // משך הדהייה
+---
+
+<div id="splash" class="splash" aria-hidden="true">
+	<img
+		class="splash-logo"
+		src="/images/banner.jpeg"
+		alt=""
+		width="769"
+		height="416"
+		fetchpriority="high"
+	/>
+</div>
+
+<style
+	is:global
+	define:vars={{ holdMs: `${HOLD_MS}ms`, fadeMs: `${FADE_MS}ms` }}
+>
+	.splash {
+		position: fixed;
+		inset: 0;
+		z-index: 200;
+		display: grid;
+		place-items: center;
+		padding: 2rem;
+		background: #241f20;
+		animation: splash-out var(--fadeMs) ease-in var(--holdMs) forwards;
+	}
+
+	.splash-logo {
+		width: min(30rem, 76vw);
+		height: auto;
+	}
+
+	/* נעילת הגלילה כל עוד מסך הפתיחה מוצג (נוסף על ידי הסקריפט) */
+	html.splash-open,
+	html.splash-open body {
+		overflow: hidden;
+	}
+
+	@keyframes splash-out {
+		to {
+			opacity: 0;
+			visibility: hidden;
+		}
+	}
+</style>
+
+<script is:inline define:vars={{ totalMs: HOLD_MS + FADE_MS }}>
+	(() => {
+		const splash = document.getElementById("splash");
+		if (!splash) return;
+
+		const root = document.documentElement;
+		root.classList.add("splash-open");
+
+		const done = () => {
+			root.classList.remove("splash-open");
+			splash.remove();
+		};
+
+		// גיבוי לטיימר, למקרה שהאנימציה לא רצה (למשל בלשונית רקע)
+		const timer = setTimeout(done, totalMs + 200);
+		splash.addEventListener("animationend", (event) => {
+			if (event.animationName !== "splash-out") return;
+			clearTimeout(timer);
+			done();
+		});
+	})();
+</script>

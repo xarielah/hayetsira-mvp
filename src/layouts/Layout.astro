@@ -1,5 +1,6 @@
 ---
 import "../styles/global.css";
+import Splash from "../components/Splash.astro";
 import { site } from "../data/site";
 
 interface Props {
@@ -44,7 +45,10 @@ const {
 			rel="stylesheet"
 		/>
 
+<<<<<<< master
 		{/* קובע ערכת נושא לפני הצביעה הראשונה כדי למנוע הבזק לבן */}
+=======
+>>>>>>> local
 		<script is:inline>
 			(() => {
 				try {
@@ -77,6 +81,7 @@ const {
 		/>
 	</head>
 	<body class="font-sans">
+		<Splash />
 		<a
 			href="#main"
 			class="sr-only focus:not-sr-only focus:fixed focus:top-4 focus:inset-s-4 focus:z-100 focus:rounded-full focus:bg-olive-700 focus:px-5 focus:py-3 focus:text-sand-50 focus:shadow-lg"
@@ -84,5 +89,56 @@ const {
 			דילוג לתוכן הראשי
 		</a>
 		<slot />
+<<<<<<< master
+=======
+
+		<script>
+			// חשיפה הדרגתית של כל אלמנט עם data-reveal ברגע שהוא נכנס למסך.
+			// החשיפה חד-פעמית — אלמנט שנחשף לא נעלם שוב בגלילה חזרה.
+			const items =
+				document.querySelectorAll<HTMLElement>("[data-reveal]");
+
+			// השהיה מדורגת לקבוצות: data-reveal-stagger="80" על אלמנט עוטף
+			document
+				.querySelectorAll<HTMLElement>("[data-reveal-stagger]")
+				.forEach((group) => {
+					const step = Number(group.dataset.revealStagger) || 0;
+					group
+						.querySelectorAll<HTMLElement>("[data-reveal]")
+						.forEach((el, index) => {
+							if (el.dataset.revealDelay === undefined) {
+								el.dataset.revealDelay = String(index * step);
+							}
+						});
+				});
+
+			items.forEach((el) => {
+				const delay = Number(el.dataset.revealDelay);
+				if (delay > 0)
+					el.style.setProperty("--reveal-delay", `${delay}ms`);
+			});
+
+			const reveal = (el: Element) => el.classList.add("is-revealed");
+
+			if (!("IntersectionObserver" in window)) {
+				items.forEach(reveal);
+			} else {
+				const observer = new IntersectionObserver(
+					(entries) => {
+						for (const entry of entries) {
+							if (!entry.isIntersecting) continue;
+							reveal(entry.target);
+							observer.unobserve(entry.target);
+						}
+					},
+					// הסף התחתון מוזז פנימה כדי שהאנימציה תתחיל רק אחרי
+					// שהאלמנט באמת נכנס למסך, ולא בדיוק על הקצה
+					{ threshold: 0, rootMargin: "0px 0px -10% 0px" },
+				);
+
+				items.forEach((el) => observer.observe(el));
+			}
+		</script>
+>>>>>>> local
 	</body>
 </html>
