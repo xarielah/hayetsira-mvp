@@ -45,6 +45,9 @@
   --color-sand-800: #403830;
   --color-sand-900: #262119;
   --color-sand-950: #171410;
+
+  /* שחור הלוגו — נדגם מרקע banner.jpeg, משמש לרקע התפריט */
+  --color-ink: #231f20;
 }
 
 @layer base {
@@ -52,6 +55,11 @@
     scroll-behavior: smooth;
     /* כדי שכותרות לא יתחבאו מתחת לתפריט הדביק בעת ניווט לעוגן */
     scroll-padding-top: 6rem;
+
+    /* התפריט בדסקטופ בן שתי שורות — לוגו ופעולות מעל, קישורי ניווט מתחת */
+    @media (width >= 48rem) {
+      scroll-padding-top: 9rem;
+    }
   }
 
   body {
