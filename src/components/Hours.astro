@@ -5,12 +5,13 @@ import { hours, site } from "../data/site";
 <section
 	id="hours"
 	aria-labelledby="hours-title"
-	class="scroll-mt-24 bg-sand-100 py-20 sm:py-28 dark:bg-sand-900/50"
+	class="slice-top-r scroll-mt-24 bg-sand-100 py-20 sm:py-28 dark:bg-sand-900/50"
 >
 	<div class="mx-auto max-w-6xl px-4 sm:px-6">
-		<header class="max-w-2xl">
+		<header class="max-w-2xl" data-reveal-stagger="90">
 			<p
 				class="flex items-center gap-3 font-medium text-clay-600 dark:text-clay-300"
+				data-reveal
 			>
 				<span class="blade h-3 w-12 shrink-0" aria-hidden="true"></span>
 				שעות ומיקום
@@ -18,18 +19,21 @@ import { hours, site } from "../data/site";
 			<h2
 				id="hours-title"
 				class="mt-3 font-display text-4xl font-black text-olive-950 sm:text-5xl dark:text-sand-50"
+				data-reveal
 			>
-				מתי ואיפה
+				אז רואים אתכם?
 			</h2>
-			<p class="mt-4 text-lg text-sand-700 dark:text-sand-300">
-				אפשר גם בלי תור מראש, אבל עם תור לא מחכים.
+			<p class="mt-4 text-lg text-sand-700 dark:text-sand-300" data-reveal>
+				אפשר גם בלי תור מראש, אבל מומלץ כדי לתקתק עניינים ולמנוע הפתעות
+				;)
 			</p>
 		</header>
 
-		<div class="mt-14 grid gap-8 lg:grid-cols-2">
+		<div class="mt-14 grid gap-8 lg:grid-cols-2" data-reveal-stagger="140">
 			{/* שעות פעילות */}
 			<div
 				class="border-2 border-sand-300 bg-sand-50 p-6 sm:p-8 dark:border-sand-800 dark:bg-sand-950"
+				data-reveal
 			>
 				<div class="flex flex-wrap items-center gap-3">
 					<h3
@@ -98,6 +102,7 @@ import { hours, site } from "../data/site";
 			{/* מיקום */}
 			<div
 				class="border-2 border-sand-300 bg-sand-50 p-6 sm:p-8 dark:border-sand-800 dark:bg-sand-950"
+				data-reveal
 			>
 				<h3
 					class="font-display text-2xl font-black text-olive-950 dark:text-sand-50"
@@ -170,7 +175,8 @@ import { hours, site } from "../data/site";
 					</a>
 				</div>
 
-				<div class="mt-6">
+				{/* המפה עצמה לא ניתנת לחיתוך — החיתוך על העטיפה */}
+				<div class="slice-bot-l mt-6 overflow-hidden [--slice:1.75rem]">
 					<iframe
 						src={site.address.embed}
 						title={`מפה: ${site.address.full}`}

@@ -1,6 +1,5 @@
 ---
 import "../styles/global.css";
-import Splash from "../components/Splash.astro";
 import { site } from "../data/site";
 
 interface Props {
@@ -45,6 +44,9 @@ const {
 			rel="stylesheet"
 		/>
 
+		{/* קובע ערכת נושא לפני הצביעה הראשונה כדי למנוע הבזק לבן.
+		    בנוסף מסמן ש-JS פעיל — רק אז אלמנטים מתחילים מוסתרים ונחשפים
+		    בגלילה, כך שבלי JS (או אם הסקריפט נכשל) התוכן פשוט גלוי. */}
 		<script is:inline>
 			(() => {
 				try {
@@ -55,6 +57,7 @@ const {
 								.matches;
 					document.documentElement.classList.toggle("dark", dark);
 				} catch {}
+				document.documentElement.classList.add("js");
 			})();
 		</script>
 
@@ -77,7 +80,6 @@ const {
 		/>
 	</head>
 	<body class="font-sans">
-		<Splash />
 		<a
 			href="#main"
 			class="sr-only focus:not-sr-only focus:fixed focus:top-4 focus:inset-s-4 focus:z-100 focus:rounded-full focus:bg-olive-700 focus:px-5 focus:py-3 focus:text-sand-50 focus:shadow-lg"
@@ -89,8 +91,7 @@ const {
 		<script>
 			// חשיפה הדרגתית של כל אלמנט עם data-reveal ברגע שהוא נכנס למסך.
 			// החשיפה חד-פעמית — אלמנט שנחשף לא נעלם שוב בגלילה חזרה.
-			const items =
-				document.querySelectorAll<HTMLElement>("[data-reveal]");
+			const items = document.querySelectorAll<HTMLElement>("[data-reveal]");
 
 			// השהיה מדורגת לקבוצות: data-reveal-stagger="80" על אלמנט עוטף
 			document
@@ -108,8 +109,7 @@ const {
 
 			items.forEach((el) => {
 				const delay = Number(el.dataset.revealDelay);
-				if (delay > 0)
-					el.style.setProperty("--reveal-delay", `${delay}ms`);
+				if (delay > 0) el.style.setProperty("--reveal-delay", `${delay}ms`);
 			});
 
 			const reveal = (el: Element) => el.classList.add("is-revealed");

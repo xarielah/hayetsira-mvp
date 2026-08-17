@@ -8,9 +8,10 @@ import InstagramPosts from "./InstagramPosts.tsx";
 	class="slice-top-l relative scroll-mt-24 bg-sand-100 py-20 [--slice:2.5rem] sm:py-28 lg:[--slice:5rem] dark:bg-sand-900/50"
 >
 	<div class="mx-auto max-w-6xl px-4 sm:px-6" id="instagram">
-		<header class="max-w-2xl">
+		<header class="max-w-2xl" data-reveal-stagger="90">
 			<p
 				class="flex items-center gap-3 font-medium text-clay-600 dark:text-clay-300"
+				data-reveal
 			>
 				<span class="blade h-3 w-12 shrink-0" aria-hidden="true"></span>
 				עבודות מהכיסא
@@ -18,10 +19,11 @@ import InstagramPosts from "./InstagramPosts.tsx";
 			<h2
 				id="instagram-title"
 				class="mt-3 font-display text-4xl font-black text-olive-950 sm:text-5xl dark:text-sand-50"
+				data-reveal
 			>
 				תעקבו אחרינו, כן?
 			</h2>
-			<p class="mt-4 text-lg text-sand-700 dark:text-sand-300">
+			<p class="mt-4 text-lg text-sand-700 dark:text-sand-300" data-reveal>
 				הפוסטים האחרונים מהחשבון שלנו. כל תמונה מתעדכנת ישירות
 				מאינסטגרם.
 			</p>
@@ -33,6 +35,7 @@ import InstagramPosts from "./InstagramPosts.tsx";
 			target="_blank"
 			rel="noopener noreferrer"
 			class="slice-br mt-10 flex flex-wrap items-center gap-4 bg-sand-50 p-6 pr-8 transition [--slice:1.25rem] hover:bg-sand-200/70 focus-visible:-outline-offset-3 dark:bg-sand-900 dark:hover:bg-sand-800"
+			data-reveal
 		>
 			<img
 				src="/images/instagram-profile.jpg"

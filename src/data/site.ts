@@ -36,8 +36,14 @@ export const nav = [
   { href: "#hours", label: "שעות ומיקום" },
 ] as const;
 
+/** מזהה קבוע לכל ספר — משמש גם כמפתח במחירון (ראו priceByBarber). */
+export type BarberId = "ronen" | "yakir" | "shon";
+
 export type Barber = {
+  id: BarberId;
   name: string;
+  /** השם שמופיע במחירון, כשהמחיר משתנה לפי ספר */
+  shortName: string;
   role: string;
   bio: string;
   specialties: string[];
@@ -48,6 +54,8 @@ export type Barber = {
 
 export const barbers: Barber[] = [
   {
+    id: "ronen",
+    shortName: "רונן",
     name: "רונן \"התער\" טיטוב",
     role: "יוצר בכיר",
     bio: "שנים של יצירה מאחוריו, עם ניסיון עשיר בתספורות קלאסיות ומודרניות. אוהב לעבוד עם מספריים בלבד.",
@@ -57,6 +65,8 @@ export const barbers: Barber[] = [
     instagram: "https://www.instagram.com/ronen_titov/",
   },
   {
+    id: "yakir",
+    shortName: "יקיר",
     name: "יקיר \"פייד\" אבוטבול",
     role: "ספר בכיר",
     bio: "מומחה לזקן ולגילוח בתער. עובד עם מגבת חמה ושמנים טבעיים, בדיוק כמו שסבא שלו עשה.",
@@ -66,6 +76,8 @@ export const barbers: Barber[] = [
     instagram: "https://www.instagram.com/yakirabutbul/",
   },
   {
+    id: "shon",
+    shortName: "שון",
     name: "שון \"השפיץ\" קוז",
     role: "ספר",
     bio: "הכתובת לטקסטורות, קרלי ותספורות מודרניות. אוהב לעבוד עם שיער שלא מתנהג יפה.",
@@ -138,21 +150,86 @@ export const gallery: GalleryItem[] = [
 export type Service = {
   name: string;
   desc: string;
+  /** מחיר ברירת המחדל — תקף לכל ספר שאין לו מחיר משלו */
   price: number;
+  /**
+   * מחיר שונה לספר מסוים, לפי המזהה שלו.
+   * מי שלא מופיע כאן — המחיר שלו הוא price.
+   * לדוגמה: priceByBarber: { yakir: 95, shon: 70 }
+   */
+  priceByBarber?: Partial<Record<BarberId, number>>;
   minutes: number;
   popular?: boolean;
 };
 
+/**
+ * שמות השירותים והתיאורים לקוחים ממערכת התורים.
+ *
+ * TODO: כל המחירים ומשכי הזמן כאן הם מצייני מקום — צריך להחליף אותם
+ * במחירים האמיתיים. המחיר של כל ספר = priceByBarber?.[id] ?? price,
+ * ולכן מספיק להוסיף ל-priceByBarber רק את מי שגובה מחיר שונה.
+ */
 export const services: Service[] = [
-  { name: "תספורת גבר", desc: "שטיפה, תספורת וסידור", price: 80, minutes: 40, popular: true },
-  { name: "תספורת + זקן", desc: "החבילה המבוקשת ביותר", price: 110, minutes: 60, popular: true },
-  { name: "עיצוב זקן", desc: "קווים, קיצור וטיפוח", price: 45, minutes: 20 },
-  { name: "גילוח מגבת חמה", desc: "תער, שמנים ומגבת חמה", price: 90, minutes: 40 },
-  { name: "תספורת ילדים", desc: "עד גיל 12", price: 65, minutes: 30 },
-  { name: "תספורת מכונה", desc: "אורך אחיד, בלי פייד", price: 55, minutes: 20 },
-  { name: "גוונים / צבע", desc: "לפי אורך השיער, כולל טיפוח", price: 180, minutes: 90 },
-  { name: "חבילת חתן", desc: "ניסיון, תספורת ביום האירוע וזקן", price: 320, minutes: 120 },
+  {
+    name: "תספורת בלבד",
+    desc: "כזאת שיושבת עליך טיל!",
+    price: 80,
+    priceByBarber: { yakir: 90 },
+    minutes: 40,
+    popular: true,
+  },
+  {
+    name: "תספורת + זקן",
+    desc: "אם בא לך לצאת זינגלר!",
+    price: 110,
+    priceByBarber: { yakir: 120 },
+    minutes: 60,
+    popular: true,
+  },
+  {
+    name: "חיילים בסדיר + עיצוב זקן",
+    desc: "אפילו הרס״ר שלך ישאל איפה הסתפרת",
+    price: 95,
+    minutes: 55,
+  },
+  {
+    name: "ילדים ובני נוער",
+    desc: "תספורות שתרצו לצלם לאינסטגרם!",
+    price: 65,
+    priceByBarber: { shon: 60 },
+    minutes: 30,
+  },
+  {
+    name: "חיילים בסדיר",
+    desc: "אפילו הרס״ר שלך ישאל איפה הסתפרת",
+    price: 70,
+    minutes: 30,
+  },
+  {
+    name: "עיצוב זקן",
+    desc: "אומרים בעיר שזקן זאת המומחיות שלנו!",
+    price: 45,
+    priceByBarber: { yakir: 55 },
+    minutes: 20,
+  },
+  {
+    name: "גילוח ראש + עיצוב זקן",
+    desc: "קרחת שמחוברת לזקן זה ה-דיבור",
+    price: 90,
+    minutes: 45,
+  },
+  {
+    name: "עבודת מספריים בלבד",
+    desc: "לבעלי שיער בינוני-ארוך",
+    price: 85,
+    minutes: 45,
+  },
 ];
+
+/** המחיר של שירות אצל ספר מסוים — ברירת המחדל, אלא אם הוגדר לו מחיר משלו. */
+export function priceFor(service: Service, barber: Barber): number {
+  return service.priceByBarber?.[barber.id] ?? service.price;
+}
 
 export type Day = { label: string; open: string | null; close: string | null; note?: string };
 

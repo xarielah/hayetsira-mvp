@@ -51,15 +51,15 @@
 }
 
 @layer base {
+  :root {
+    /* גובה התפריט הקבוע — משמש גם לריווח פנימי במצגת הצוות */
+    --header-h: 4.5rem;
+  }
+
   html {
     scroll-behavior: smooth;
     /* כדי שכותרות לא יתחבאו מתחת לתפריט הדביק בעת ניווט לעוגן */
     scroll-padding-top: 6rem;
-
-    /* התפריט בדסקטופ בן שתי שורות — לוגו ופעולות מעל, קישורי ניווט מתחת */
-    @media (width >= 48rem) {
-      scroll-padding-top: 9rem;
-    }
   }
 
   body {
@@ -115,6 +115,16 @@
     background-repeat: repeat-x;
   }
 
+  /* הטמעות אינסטגרם — embed.js הרשמי כופה min-width:326px ו-max-width:540px
+     בסגנון inline על האייפריים, ולכן הוא גולש מהמסך במכשירים צרים.
+     מאפסים את רוחב המינימום כדי שההטמעה תתכווץ יחד עם המכל. */
+  .rsme-embed,
+  .rsme-embed .instagram-media,
+  .rsme-embed iframe.instagram-media {
+    min-width: 0 !important;
+    max-width: 100% !important;
+  }
+
   /* פס אלכסוני דקורטיבי — "להב" */
   .blade {
     background-image: repeating-linear-gradient(
@@ -122,6 +132,184 @@
       currentColor 0 2px,
       transparent 2px 9px
     );
+  }
+}
+
+/* ──────────────────────────────────────────────
+   חשיפה הדרגתית של אלמנטים בכניסה למסך.
+
+   שימוש:  data-reveal            — עולה מלמטה (ברירת מחדל)
+           data-reveal="fade"     — שקיפות בלבד
+           data-reveal="zoom"     — התקרבות עדינה
+           data-reveal="start"    — נכנס מצד ההתחלה (ימין ב-RTL)
+           data-reveal="end"      — נכנס מצד הסיום
+           data-reveal-delay="120"          — השהיה במילישניות
+           data-reveal-stagger="80" על מכל — משהה את הצאצאים בזה אחר זה
+
+   המצב ההתחלתי (מוסתר) חל רק כשיש .js על <html>, כך שבלי JS הכל גלוי.
+   ────────────────────────────────────────────── */
+@media (prefers-reduced-motion: no-preference) {
+  .js [data-reveal] {
+    opacity: 0;
+    transform: translateY(1.75rem);
+    transition:
+      opacity 700ms cubic-bezier(0.22, 1, 0.36, 1) var(--reveal-delay, 0ms),
+      transform 700ms cubic-bezier(0.22, 1, 0.36, 1) var(--reveal-delay, 0ms);
+  }
+
+  .js [data-reveal="fade"] {
+    transform: none;
+  }
+
+  .js [data-reveal="zoom"] {
+    transform: scale(0.94);
+  }
+
+  /* הצדדים לוגיים — נמדדים לפי כיוון הכתיבה של הדף */
+  .js [data-reveal="start"] {
+    transform: translateX(2.5rem);
+  }
+
+  .js [data-reveal="end"] {
+    transform: translateX(-2.5rem);
+  }
+
+  .js [dir="ltr"] [data-reveal="start"] {
+    transform: translateX(-2.5rem);
+  }
+
+  .js [dir="ltr"] [data-reveal="end"] {
+    transform: translateX(2.5rem);
+  }
+
+  .js [data-reveal].is-revealed {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+/* ──────────────────────────────────────────────
+   לשוניות המחירון — המצב שלפני שהסקריפט מספיק לרוץ.
+
+   בלי JS כל המחירונים גלויים בזה אחר זה (ראו Pricing.astro), אבל כשיש JS
+   הם עומדים להפוך ללשוניות — ובלי הכלל הזה שלושתם היו מהבהבים על המסך
+   עד שהסקריפט מסתיר אותם. לכן משאירים גלוי רק את הראשון.
+
+   הסקריפט מסמן data-pricing-ready על <html> ברגע שהוא לוקח שליטה, ומאז
+   ההסתרה נעשית דרך [hidden] בלבד — אחרת הכלל הזה היה ממשיך להסתיר
+   פאנלים שהסקריפט דווקא רוצה להציג.
+   ────────────────────────────────────────────── */
+.js:not([data-pricing-ready]) [data-pricing-panel] ~ [data-pricing-panel] {
+  display: none;
+}
+
+/* ──────────────────────────────────────────────
+   מצגת הצוות: הסקשן "ננעל" למסך וכל גלילה מחליפה ספר.
+
+   העיגון נעשה ב-position:sticky על גבי "מסילה" גבוהה במקום חטיפת גלגלת,
+   ולכן הגלילה נשארת מקורית לחלוטין — מקלדת, טאצ'פד, פס גלילה וחיפוש בדף
+   עובדים כרגיל, ובסוף המסילה הדף ממשיך לסקשן הבא מעצמו.
+
+   התנאים למצב הנעול: מסך גבוה מספיק כדי שספר שלם ייכנס בו, ומשתמש שלא
+   ביקש לצמצם תנועה. מכאן שבנייד לאורך המצגת פעילה, ובנייד לרוחב (מסך נמוך
+   מדי לספר שלם) הרשימה חוזרת להיות רשימה רגילה ונגללת.
+   ────────────────────────────────────────────── */
+.barbers-slides {
+  display: grid;
+  gap: 4rem;
+}
+
+@media (min-height: 34rem) and (prefers-reduced-motion: no-preference) {
+  .js .barbers-track {
+    /* מסך אחד לתצוגה עצמה + מנת גלילה אחת לכל ספר */
+    height: calc(100svh + var(--slide-count) * var(--slide-scroll, 80vh));
+  }
+
+  .js .barbers-pin {
+    position: sticky;
+    top: 0;
+    height: 100svh;
+    overflow: hidden;
+  }
+
+  .js .barbers-slides {
+    display: block;
+    gap: 0;
+    height: 100%;
+  }
+
+  .js .barber-slide {
+    /* --slide-exit / --slide-enter מרוכזים ב-.barbers-slides כדי שיהיה
+       אפשר להפוך את כיוון התנועה בשורה אחת */
+    position: absolute;
+    inset: 0;
+    /* grid עם ילד יחיד — התוכן נמתח לגובה המסך המלא,
+       כך שהתמונה יוצאת מקצה לקצה והטקסט מתמרכז בתוכה */
+    display: grid;
+    padding-top: var(--header-h);
+    opacity: 0;
+    transform: translateX(var(--slide-enter, 100%));
+    transition:
+      transform 650ms cubic-bezier(0.65, 0, 0.35, 1),
+      opacity 400ms ease-out;
+    will-change: transform, opacity;
+  }
+
+  /* ספרים שכבר עברנו ממתינים משמאל, הבאים בתור ממתינים מימין */
+  .js .barber-slide[data-state="past"] {
+    transform: translateX(var(--slide-exit, -100%));
+  }
+
+  .js .barber-slide[data-state="active"] {
+    opacity: 1;
+    transform: none;
+  }
+
+  .js .barbers-rail {
+    display: flex;
+  }
+}
+
+/* מתחת ל-lg הספר נערם: הטקסט לוקח את הגובה שהוא צריך והתמונה מקבלת
+   בדיוק את מה שנשאר, כך שספר שלם נכנס למסך גם בטלפון קטן ובלי גלילה
+   פנימית. סרגל ההתקדמות עובר לפס אופקי בתחתית, ולכן נשמר לו מקום ב-
+   padding-bottom במקום שירחף מעל הטקסט. */
+@media (width < 64rem) and (min-height: 34rem) and (prefers-reduced-motion: no-preference) {
+  .js .barbers-track {
+    --slide-scroll: 70vh;
+  }
+
+  .js .barber-slide {
+    padding-bottom: 3rem;
+  }
+
+  .js .barber-layout {
+    height: 100%;
+    grid-template-rows: minmax(0, 1fr) auto;
+  }
+
+  .js .barber-media {
+    display: grid;
+    min-height: 0;
+  }
+
+  .js .barber-photo {
+    height: 100%;
+    min-height: 0;
+  }
+
+  .js .barber-copy {
+    padding-top: 1.25rem;
+  }
+
+  .js .barbers-rail {
+    inset-block: auto 0.75rem;
+    inset-inline: 0;
+    flex-direction: row;
+    justify-content: center;
+    gap: 1.25rem;
+    /* מבטל את -translate-y-1/2 שנחוץ רק במצב האנכי בדסקטופ */
+    translate: none;
   }
 }
 
